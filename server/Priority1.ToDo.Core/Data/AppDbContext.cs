@@ -16,6 +16,12 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Todo>()
+            .HasOne(t => t.TodosList)
+            .WithMany(l => l.Todos)
+            .HasForeignKey(t => t.TodosListId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken ct = default)

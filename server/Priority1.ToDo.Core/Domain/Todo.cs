@@ -14,6 +14,7 @@ public class Todo : EntityBase
     [Required]
     public DateTime DueDate { get; set; }
 
+    [Required]
     public int TodosListId { get; set; }
 
     [ForeignKey(nameof(TodosListId))]
