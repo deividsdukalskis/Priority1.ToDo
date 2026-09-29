@@ -10,12 +10,15 @@ public class CreateTodoRequest
 
     public bool IsComplete { get; set; }
 
+    public DateTime DueDate { get; set; }
+
     public Todo ToModel()
     {
         return new Todo
         {
             Title = Title,
-            IsComplete = IsComplete
+            IsComplete = IsComplete,
+            DueDate = DueDate,
         };
     }
 }
