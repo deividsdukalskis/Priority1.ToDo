@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 export default function TodoItem({ todo, today, onToggle, onEdit, onDelete }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(todo.title);
   const [draftDueDate, setDraftDueDate] = useState('');
   const [saving, setSaving] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
+  const actionInProgress = useRef(false);
   // Creation timestamps are stored in UTC, even when the API omits the zone.
   const createdTimestamp = todo.createDate
     ? (/(Z|[+-]\d{2}:\d{2})$/i.test(todo.createDate) ? todo.createDate : `${todo.createDate}Z`)
@@ -20,9 +22,22 @@ export default function TodoItem({ todo, today, onToggle, onEdit, onDelete }) {
   const overdue = hasDueDate && !todo.isComplete && dueDate < today;
 
   function startEdit() {
+    if (actionInProgress.current) return;
     setDraft(todo.title);
     setDraftDueDate(hasDueDate ? datePart : '');
     setEditing(true);
+  }
+
+  async function runAction(name, action) {
+    if (actionInProgress.current || saving) return;
+    actionInProgress.current = true;
+    setPendingAction(name);
+    try {
+      await action(todo);
+    } finally {
+      actionInProgress.current = false;
+      setPendingAction(null);
+    }
   }
 
   async function saveEdit(event) {
@@ -46,8 +61,8 @@ export default function TodoItem({ todo, today, onToggle, onEdit, onDelete }) {
       <input
         type="checkbox"
         checked={todo.isComplete}
-        disabled={editing}
-        onChange={() => onToggle(todo)}
+        disabled={editing || !!pendingAction}
+        onChange={() => runAction('toggle', onToggle)}
         title="Mark complete / incomplete"
       />
 
@@ -68,6 +83,7 @@ export default function TodoItem({ todo, today, onToggle, onEdit, onDelete }) {
               <input
                 type="text"
                 required
+                maxLength={200}
                 value={draft}
                 autoFocus
                 disabled={saving}
@@ -122,9 +138,11 @@ export default function TodoItem({ todo, today, onToggle, onEdit, onDelete }) {
       </div>
 
       {!editing && (
-        <button onClick={startEdit}>Edit</button>
+        <button disabled={!!pendingAction} onClick={startEdit}>Edit</button>
       )}
-      <button disabled={saving} onClick={() => onDelete(todo)}>Delete</button>
+      <button disabled={editing || saving || !!pendingAction} onClick={() => runAction('delete', onDelete)}>
+        {pendingAction === 'delete' ? 'Deleting…' : 'Delete'}
+      </button>
     </li>
   );
 }

@@ -6,10 +6,12 @@ namespace Priority1.ToDo.Api.Models.Requests;
 public class CreateTodoRequest
 {
     [Required]
+    [MaxLength(200)]
     public string Title { get; set; }
 
     public bool IsComplete { get; set; }
 
+    [Required]
     public int TodosListId { get; set; }
 
     [Required]

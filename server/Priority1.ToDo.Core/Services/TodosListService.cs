@@ -21,7 +21,7 @@ public class TodosListService : ITodosListService
 
 	public async Task<TodosList?> GetByIdAsync(int id, CancellationToken ct = default)
 	{
-		return await _context.TodosLists.FirstOrDefaultAsync(t => t.Id == id, ct);
+		return await _context.TodosLists.Include(t => t.Todos).FirstOrDefaultAsync(t => t.Id == id, ct);
 	}
 
 	public async Task<TodosList> CreateAsync(TodosList itemToCreate, CancellationToken ct = default)
@@ -54,7 +54,16 @@ public class TodosListService : ITodosListService
 		}
 
 		_context.TodosLists.Remove(todosList);
-		await _context.SaveChangesAsync(ct);
+
+		try
+		{
+			await _context.SaveChangesAsync(ct);
+		}
+		catch (DbUpdateConcurrencyException)
+		{
+			return false;
+		}
+
 		return true;
 	}
 }

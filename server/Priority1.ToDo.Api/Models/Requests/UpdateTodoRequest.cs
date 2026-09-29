@@ -7,9 +7,8 @@ public class UpdateTodoRequest
 {
     
     [Required]
+    [MaxLength(200)]
     public string Title { get; set; }
-
-	public int TodosListId { get; set; }
 
 	public bool IsComplete { get; set; }
 
@@ -25,7 +24,6 @@ public class UpdateTodoRequest
             Title = Title,
             IsComplete = IsComplete,
             DueDate = DueDate,
-            TodosListId = TodosListId,
         };
     }
 }

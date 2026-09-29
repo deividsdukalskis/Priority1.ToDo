@@ -6,6 +6,7 @@ namespace Priority1.ToDo.Api.Models.Requests;
 public class UpdateTodosListRequest
 {
 	[Required]
+	[MaxLength(200)]
 	public string Title { get; set; }
 
 	public TodosList ToModel(int id)
