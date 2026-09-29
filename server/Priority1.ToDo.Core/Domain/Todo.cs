@@ -10,5 +10,6 @@ public class Todo : EntityBase
 
     public bool IsComplete { get; set; } = false;
 
+    [Required]
     public DateTime DueDate { get; set; }
 }

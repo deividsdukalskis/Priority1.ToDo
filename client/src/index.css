@@ -21,16 +21,45 @@ h1 {
 
 .add-form {
   display: flex;
+  flex-wrap: wrap;
+  align-items: end;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
 }
 
-.add-form input {
-  flex: 1;
+.add-form input,
+.edit-form input {
+  box-sizing: border-box;
+  height: 2.5rem;
+  min-width: 0;
   padding: 0.5rem 0.6rem;
   border: 1px solid #d0d7de;
   border-radius: 6px;
   font-size: 1rem;
+  font-family: inherit;
+}
+
+.add-form > button {
+  height: 2.5rem;
+}
+
+.add-form .title-field {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.title-field,
+.due-date-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #6e7781;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
 }
 
 button {
@@ -56,6 +85,14 @@ button.primary:hover {
   background: #1a7f37;
 }
 
+.todo-sort {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
 ul.todo-list {
   list-style: none;
   padding: 0;
@@ -75,8 +112,37 @@ ul.todo-list {
   border-radius: 8px;
 }
 
-.todo-item .title {
+.todo-content {
   flex: 1;
+  min-width: 0;
+}
+
+.todo-item .title {
+  overflow-wrap: anywhere;
+}
+
+.todo-created-date,
+.todo-due-date {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+  color: #6e7781;
+  font-size: 0.8rem;
+}
+
+.todo-item.overdue {
+  border-color: #cf222e;
+  background: #fff5f5;
+}
+
+.overdue-badge {
+  color: #a40e26;
+  background: #ffebe9;
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  font-weight: 600;
 }
 
 .todo-item .title.complete {
@@ -84,12 +150,17 @@ ul.todo-list {
   color: #6e7781;
 }
 
-.todo-item input.edit-title {
-  flex: 1;
-  padding: 0.35rem 0.5rem;
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
-  font-size: 1rem;
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.edit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .muted {
