@@ -1,6 +1,6 @@
-﻿namespace Priority1.ToDo.Api.Models.Requests;
-
 using System.Globalization;
+
+namespace Priority1.ToDo.Api.Models.Requests;
 
 public static class TodoValidationConstants
 {

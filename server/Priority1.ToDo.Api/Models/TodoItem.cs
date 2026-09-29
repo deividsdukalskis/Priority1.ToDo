@@ -7,7 +7,8 @@ public class TodoItem
     public int Id { get; set; }
     public string Title { get; set; }
     public bool IsComplete { get; set; }
-    public DateTime CreateDate { get; set; }
+	public int TodosListId { get; set; }
+	public DateTime CreateDate { get; set; }
     public DateTime UpdateDate { get; set; }
     public DateTime DueDate { get; set; }
 
@@ -21,6 +22,7 @@ public class TodoItem
             CreateDate = todo.CreateDate,
             UpdateDate = todo.UpdateDate,
             DueDate = todo.DueDate,
+            TodosListId = todo.TodosListId,
         };
     }
 
@@ -34,6 +36,7 @@ public class TodoItem
             CreateDate = CreateDate,
             UpdateDate = UpdateDate,
             DueDate = DueDate,
+            TodosListId = TodosListId,
         };
     }
 }

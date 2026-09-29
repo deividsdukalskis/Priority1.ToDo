@@ -24,8 +24,13 @@ public class TodoService : ITodoService
         return await _context.Todos.FirstOrDefaultAsync(t => t.Id == id, ct);
     }
 
-    public async Task<Todo> CreateAsync(Todo itemToCreate, CancellationToken ct = default)
+    public async Task<Todo?> CreateAsync(Todo itemToCreate, ITodosListService todosListService, CancellationToken ct = default)
     {
+        if (todosListService.GetByIdAsync(itemToCreate.Id, ct) is null)
+        {
+            return null;
+        }
+
         _context.Todos.Add(itemToCreate);
         await _context.SaveChangesAsync(ct);
         return itemToCreate;

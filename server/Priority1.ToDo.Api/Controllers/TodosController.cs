@@ -10,10 +10,12 @@ namespace Priority1.ToDo.Api.Controllers;
 public class TodosController : ControllerBase
 {
     private readonly ITodoService _todoService;
+    private readonly ITodosListService _todosListService;
 
-    public TodosController(ITodoService todoService)
+    public TodosController(ITodoService todoService, ITodosListService todosListService)
     {
         _todoService = todoService;
+        _todosListService = todosListService;
     }
 
     [HttpGet]
@@ -33,7 +35,12 @@ public class TodosController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<TodoItem>> Create([FromBody] CreateTodoRequest request, CancellationToken ct)
     {
-        var created = await _todoService.CreateAsync(request.ToModel(), ct);
+        var created = await _todoService.CreateAsync(request.ToModel(), _todosListService, ct);
+        if (created is null)
+        {
+            return BadRequest($"{request.TodosListId} is not a valid todos list id!");
+        }
+
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, TodoItem.From(created));
     }
 

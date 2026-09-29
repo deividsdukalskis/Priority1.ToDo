@@ -10,6 +10,8 @@ public class CreateTodoRequest
 
     public bool IsComplete { get; set; }
 
+    public int TodosListId { get; set; }
+
     [Required]
     [Range(typeof(DateTime), TodoValidationConstants.MinDate, TodoValidationConstants.MaxDate, ErrorMessage = TodoValidationConstants.ValidationMessage)]
     public DateTime DueDate { get; set; }
@@ -21,6 +23,7 @@ public class CreateTodoRequest
             Title = Title,
             IsComplete = IsComplete,
             DueDate = DueDate,
+            TodosListId = TodosListId,
         };
     }
 }

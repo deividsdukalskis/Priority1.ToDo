@@ -9,7 +9,9 @@ public class UpdateTodoRequest
     [Required]
     public string Title { get; set; }
 
-    public bool IsComplete { get; set; }
+	public int TodosListId { get; set; }
+
+	public bool IsComplete { get; set; }
 
 	[Required]
 	[Range(typeof(DateTime), TodoValidationConstants.MinDate, TodoValidationConstants.MaxDate, ErrorMessage = TodoValidationConstants.ValidationMessage)]
@@ -23,6 +25,7 @@ public class UpdateTodoRequest
             Title = Title,
             IsComplete = IsComplete,
             DueDate = DueDate,
+            TodosListId = TodosListId,
         };
     }
 }
