@@ -27,6 +27,7 @@ export default function AddTodoForm({ onAdd }) {
         <input
           type="text"
           required
+          maxLength={200}
           disabled={submitting}
           placeholder="What needs doing?"
           value={title}

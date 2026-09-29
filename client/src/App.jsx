@@ -1,24 +1,50 @@
 import { useEffect, useState } from 'react';
-import { getTodos, createTodo, updateTodo, deleteTodo } from './api';
+import { getList, createTodo, updateTodo, deleteTodo } from './api';
 import AddTodoForm from './components/AddTodoForm';
 import TodoList from './components/TodoList';
+import ListsPage from './components/ListsPage';
 
 export default function App() {
+  const [selectedList, setSelectedList] = useState(null);
+
+  return (
+    <main className="app">
+      <h1>Priority1 ToDo</h1>
+      {selectedList === null ? (
+        <ListsPage onOpen={setSelectedList} />
+      ) : (
+        <ListPage key={selectedList} listId={selectedList} onBack={() => setSelectedList(null)} />
+      )}
+    </main>
+  );
+}
+
+function ListPage({ listId, onBack }) {
+  const [list, setList] = useState(null);
   const [todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [attempt, setAttempt] = useState(0);
 
-  // Load all todos once on mount.
   useEffect(() => {
-    getTodos()
-      .then(setTodos)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }, []);
+    let active = true;
+    setLoading(true);
+    setError(null);
+    getList(listId)
+      .then((value) => {
+        if (active) {
+          setList(value);
+          setTodos(value.todos);
+        }
+      })
+      .catch((e) => { if (active) setError(e.message); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [listId, attempt]);
 
   async function handleAdd(title, dueDate) {
     try {
-      const created = await createTodo({ title, dueDate });
+      const created = await createTodo({ title, dueDate, todosListId: listId });
       setTodos((prev) => [...prev, created]);
       setError(null);
       return true;
@@ -36,6 +62,7 @@ export default function App() {
         dueDate: todo.dueDate,
       });
       setTodos((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+      setError(null);
     } catch (e) {
       setError(e.message);
     }
@@ -61,29 +88,31 @@ export default function App() {
     try {
       await deleteTodo(todo.id);
       setTodos((prev) => prev.filter((t) => t.id !== todo.id));
+      setError(null);
     } catch (e) {
       setError(e.message);
     }
   }
 
   return (
-    <div className="app">
-      <h1>Priority1 ToDo</h1>
-
-      {error && <div className="error">{error}</div>}
-
-      <AddTodoForm onAdd={handleAdd} />
+    <>
+      <button className="back-button" onClick={onBack}>← All lists</button>
+      {list && <h2>{list.title}</h2>}
+      {error && <div className="error" role="alert">{error}</div>}
 
       {loading ? (
-        <p className="muted">Loading…</p>
-      ) : (
+        <p className="muted" role="status">Loading…</p>
+      ) : !list ? (
+        <button onClick={() => setAttempt((value) => value + 1)}>Retry</button>
+      ) : <>
+        <AddTodoForm onAdd={handleAdd} />
         <TodoList
           todos={todos}
           onToggle={handleToggle}
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
-      )}
-    </div>
+      </>}
+    </>
   );
 }

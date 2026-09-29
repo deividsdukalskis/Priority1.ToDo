@@ -24,8 +24,15 @@ public class TodoService : ITodoService
         return await _context.Todos.FirstOrDefaultAsync(t => t.Id == id, ct);
     }
 
-    public async Task<Todo> CreateAsync(Todo itemToCreate, CancellationToken ct = default)
+    public async Task<Todo?> CreateAsync(Todo itemToCreate, ITodosListService todosListService, CancellationToken ct = default)
     {
+        var list = await todosListService.GetByIdAsync(itemToCreate.TodosListId, ct);
+        if (list is null)
+        {
+            return null;
+        }
+
+        itemToCreate.TodosList = list;
         _context.Todos.Add(itemToCreate);
         await _context.SaveChangesAsync(ct);
         return itemToCreate;
@@ -41,6 +48,7 @@ public class TodoService : ITodoService
 
         todo.Title = itemToUpdate.Title;
         todo.IsComplete = itemToUpdate.IsComplete;
+        todo.DueDate = itemToUpdate.DueDate;
 
         await _context.SaveChangesAsync(ct);
         return todo;
@@ -55,7 +63,16 @@ public class TodoService : ITodoService
         }
 
         _context.Todos.Remove(todo);
-        await _context.SaveChangesAsync(ct);
+
+        try
+        {
+            await _context.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return false;
+        }
+
         return true;
     }
 }

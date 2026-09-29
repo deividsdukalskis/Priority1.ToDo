@@ -39,7 +39,8 @@ h1 {
   font-family: inherit;
 }
 
-.add-form > button {
+.add-form > button,
+.add-form > .edit-actions > button {
   height: 2.5rem;
 }
 
@@ -170,4 +171,39 @@ ul.todo-list {
 .error {
   color: #cf222e;
   margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.15rem;
+  margin: 0 0 1rem;
+  overflow-wrap: anywhere;
+}
+
+.back-button {
+  margin-bottom: 1rem;
+}
+
+.list-item {
+  flex-wrap: wrap;
+}
+
+.list-link {
+  flex: 1 1 160px;
+  min-width: 0;
+  text-align: left;
+  overflow-wrap: anywhere;
+  color: inherit;
+  font: inherit;
+  border-color: transparent;
+}
+
+.delete-message {
+  margin: 0 0 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #1f883d;
+  outline-offset: 2px;
 }

@@ -8,7 +8,7 @@ public interface ITodoService
 
     Task<Todo?> GetByIdAsync(int id, CancellationToken ct = default);
 
-    Task<Todo> CreateAsync(Todo itemToCreate, CancellationToken ct = default);
+    Task<Todo?> CreateAsync(Todo itemToCreate, ITodosListService todosListService, CancellationToken ct = default);
 
     Task<Todo?> UpdateAsync(Todo itemToUpdate, CancellationToken ct = default);
 
