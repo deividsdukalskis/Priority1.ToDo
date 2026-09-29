@@ -16,19 +16,19 @@ export function getTodos() {
   return fetch(TODOS_URL).then(handle);
 }
 
-export function createTodo({ title, isComplete = false }) {
+export function createTodo({ title, dueDate, isComplete = false }) {
   return fetch(TODOS_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title, isComplete }),
+    body: JSON.stringify({ title, dueDate: `${dueDate}T00:00:00`, isComplete }),
   }).then(handle);
 }
 
-export function updateTodo(id, { title, isComplete }) {
+export function updateTodo(id, { title, isComplete, dueDate }) {
   return fetch(`${TODOS_URL}/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title, isComplete }),
+    body: JSON.stringify({ title, isComplete, dueDate }),
   }).then(handle);
 }
 

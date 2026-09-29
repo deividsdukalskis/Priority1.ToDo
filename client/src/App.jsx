@@ -16,12 +16,15 @@ export default function App() {
       .finally(() => setLoading(false));
   }, []);
 
-  async function handleAdd(title) {
+  async function handleAdd(title, dueDate) {
     try {
-      const created = await createTodo({ title });
+      const created = await createTodo({ title, dueDate });
       setTodos((prev) => [...prev, created]);
+      setError(null);
+      return true;
     } catch (e) {
       setError(e.message);
+      return false;
     }
   }
 
@@ -30,6 +33,7 @@ export default function App() {
       const updated = await updateTodo(todo.id, {
         title: todo.title,
         isComplete: !todo.isComplete,
+        dueDate: todo.dueDate,
       });
       setTodos((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
     } catch (e) {
@@ -37,15 +41,19 @@ export default function App() {
     }
   }
 
-  async function handleRename(todo, title) {
+  async function handleEdit(todo, title, dueDate) {
     try {
       const updated = await updateTodo(todo.id, {
         title,
         isComplete: todo.isComplete,
+        dueDate: `${dueDate}T00:00:00`,
       });
       setTodos((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+      setError(null);
+      return true;
     } catch (e) {
       setError(e.message);
+      return false;
     }
   }
 
@@ -72,7 +80,7 @@ export default function App() {
         <TodoList
           todos={todos}
           onToggle={handleToggle}
-          onRename={handleRename}
+          onEdit={handleEdit}
           onDelete={handleDelete}
         />
       )}

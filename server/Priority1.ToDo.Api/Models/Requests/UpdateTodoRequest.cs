@@ -11,13 +11,18 @@ public class UpdateTodoRequest
 
     public bool IsComplete { get; set; }
 
+	[Required]
+	[Range(typeof(DateTime), TodoValidationConstants.MinDate, TodoValidationConstants.MaxDate, ErrorMessage = TodoValidationConstants.ValidationMessage)]
+	public DateTime DueDate { get; set; }
+
     public Todo ToModel(int id)
     {
         return new Todo
         {
             Id = id,
             Title = Title,
-            IsComplete = IsComplete
+            IsComplete = IsComplete,
+            DueDate = DueDate,
         };
     }
 }
